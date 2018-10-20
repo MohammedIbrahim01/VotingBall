@@ -28,22 +28,17 @@ public class DropYourOptionsActivity extends AppCompatActivity {
     AdapterForCustomListViews adapter;
     int numberOfOptions;
 
-    List<OptionEntry> testList = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drop_your_option);
         calling();
-//        handling();
-        adapter = new AdapterForCustomListViews(getApplicationContext(), R.layout.one_option_layout);
+        handling();
+
+        adapter = new AdapterForCustomListViews();
         optionListView.setAdapter(adapter);
-//        retrieveOptions();
-//        handlingDeletion();
-        testList.add(new OptionEntry("o1"));
-        testList.add(new OptionEntry("o2"));
-        testList.add(new OptionEntry("o3"));
-        adapter.setOptionsListInAdapter(testList);
+        retrieveOptions();
+        handlingDeletion();
     }
 
     void handling() {

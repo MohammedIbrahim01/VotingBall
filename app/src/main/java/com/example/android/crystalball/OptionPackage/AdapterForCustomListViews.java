@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.android.crystalball.R;
@@ -14,7 +15,7 @@ import com.example.android.crystalball.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterForCustomListViews extends ArrayAdapter<CustomObjectForOneOptionItems> {
+public class AdapterForCustomListViews extends BaseAdapter {
 
     List<OptionEntry> OptionsListInAdapter = new ArrayList<>();
 
@@ -26,8 +27,20 @@ public class AdapterForCustomListViews extends ArrayAdapter<CustomObjectForOneOp
         return OptionsListInAdapter;
     }
 
-    public AdapterForCustomListViews(@NonNull Context context, int resource) {
-        super(context, 0);
+
+    @Override
+    public int getCount() {
+        return OptionsListInAdapter.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
     }
 
     @NonNull
@@ -36,7 +49,7 @@ public class AdapterForCustomListViews extends ArrayAdapter<CustomObjectForOneOp
         View listItemView = convertView;
         if (listItemView == null) {
 
-            listItemView = LayoutInflater.from(getContext()).inflate(
+            listItemView = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.one_option_layout, parent, false);
         }
         //CustomObjectForOneOptionItems current = getItem(position);

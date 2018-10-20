@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.crystalball.OptionPackage.AdapterForCustomListViews;
+import com.example.android.crystalball.OptionPackage.AppExecutor;
 import com.example.android.crystalball.OptionPackage.CustomObjectForOneOptionItems;
 import com.example.android.crystalball.OptionPackage.OptionDatabase;
 import com.example.android.crystalball.OptionPackage.OptionEntry;
@@ -21,9 +22,8 @@ public class DropYourOptionsActivity extends AppCompatActivity {
     Button btnAdd;
     ListView optionListView;
     EditText enterYourOptionEditText;
-    EditText ShowOptionEditText;
     OptionDatabase database;
-    List<CustomObjectForOneOptionItems> listOfOptionEntry = new ArrayList<>();
+    List<OptionEntry> listOfOptionEntry = new ArrayList<>();
     TextView numberOfOptionTextView;
     AdapterForCustomListViews adapter;
     int numberOfOptions;
@@ -34,6 +34,9 @@ public class DropYourOptionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_drop_your_option);
         calling();
         handling();
+        adapter = new AdapterForCustomListViews(getApplicationContext(), R.layout.one_option_layout);
+        optionListView.setAdapter(adapter);
+        retrieveOptions();
         handlingDeletion();
     }
 
@@ -49,28 +52,40 @@ public class DropYourOptionsActivity extends AppCompatActivity {
     }
 
     void retrieveOptions() {
+        numberOfOptions = database.OptionDao().loadAllOptions().size();
+        numberOfOptionTextView.setText("number of Options is " + numberOfOptions);
 
+        listOfOptionEntry = database.OptionDao().loadAllOptions();
 
+        adapter.setOptionsListInAdapter(listOfOptionEntry);
+        adapter.notifyDataSetChanged();
+    }
+
+   /* void retrieveOptions() {
         numberOfOptions = database.OptionDao().loadAllOptions().size();
         //int numberOfOptions = database.OptionDao().loadAllOptions().lastIndexOf(listOfOptionEntry);
         numberOfOptionTextView.setText("number of Options is " + numberOfOptions);
         listOfOptionEntry.clear();
         for (int i = 0; i < numberOfOptions; i++) {
-            listOfOptionEntry.add(new CustomObjectForOneOptionItems(database.OptionDao().loadAllOptions().get(i).getId(), database.OptionDao().loadAllOptions().get(i).getDescription()));
+            listOfOptionEntry.add(new CustomObjectForOneOptionItems(database.OptionDao().loadAllOptions().
+                    get(i).getId(), database.OptionDao().loadAllOptions().get(i).getDescription()));
         }
-        adapter = new AdapterForCustomListViews(getApplicationContext(), R.layout.one_option_layout, listOfOptionEntry);
-        optionListView.setAdapter(adapter);
+        adapter = new AdapterForCustomListViews(getApplicationContext(), R.layout.one_option_layout);
+        adapter.setOptionsListInAdapter(listOfOptionEntry);
 
-    }
+        optionListView.setAdapter(adapter);
+    }*/
+
 
     void handlingDeletion() {
+
         optionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listOfOptionEntry.remove(position);
-                List<CustomObjectForOneOptionItems> zizoList = adapter.getMohamedList();
-                deleteOptionFromDataBase(zizoList.get(position));
-                adapter.notifyDataSetChanged();
+
+                List<OptionEntry> optionsListFromAdapter = adapter.getOptionsListInAdapter();
+                deleteOptionFromDataBase(optionsListFromAdapter.get(position));
+                retrieveOptions();
             }
         });
     }
@@ -83,10 +98,16 @@ public class DropYourOptionsActivity extends AppCompatActivity {
 
     }
 
-    private void deleteOptionFromDataBase(CustomObjectForOneOptionItems customObjectForOneOptionItems) {
+    private void deleteOptionFromDataBase(final OptionEntry optionEntry) {
 
-        OptionEntry optionEntry = new OptionEntry(customObjectForOneOptionItems.getOneOptionId(), customObjectForOneOptionItems.getOneOption());
-        database.OptionDao().deleteOption(optionEntry);
+        //final OptionEntry optionEntry = new OptionEntry(customObjectForOneOptionItems.getOneOptionId(), customObjectForOneOptionItems.getOneOption());
+        AppExecutor.getInstance().diskIO.execute(new Runnable() {
+            @Override
+            public void run() {
+                database.OptionDao().deleteOption(optionEntry);
+            }
+        });
+
 
     }
 
@@ -94,7 +115,7 @@ public class DropYourOptionsActivity extends AppCompatActivity {
         database = OptionDatabase.getInstance(getApplicationContext());
         btnAdd = findViewById(R.id.btnAdd);
         optionListView = findViewById(R.id.optionListView);
-        ShowOptionEditText = findViewById(R.id.ShowOptionEditText);
+
         enterYourOptionEditText = findViewById(R.id.enterYourOptionEditText);
         numberOfOptionTextView = findViewById(R.id.numberOfOptionTextView);
     }

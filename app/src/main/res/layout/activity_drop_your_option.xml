@@ -19,13 +19,6 @@
             android:gravity="center"
             android:hint="add your options"
             android:id="@+id/enterYourOptionEditText"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:gravity="center"
-            android:hint="options"
-            android:id="@+id/ShowOptionEditText"/>
 
         <Button
             android:id="@+id/btnAdd"
@@ -51,16 +44,8 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Number"/>
-        <TextView
-            android:id="@+id/oneOptionIdTitle"
-            android:gravity="center"
-            android:textSize="30sp"
-            android:layout_weight="1"
-            android:textColor="#129854"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Option"/>
+            android:text="Options"/>
+
     </LinearLayout>
     <ListView
         android:id="@+id/optionListView"

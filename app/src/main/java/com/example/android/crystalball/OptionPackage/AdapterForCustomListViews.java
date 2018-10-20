@@ -16,15 +16,18 @@ import java.util.List;
 
 public class AdapterForCustomListViews extends ArrayAdapter<CustomObjectForOneOptionItems> {
 
-    List<CustomObjectForOneOptionItems> mohamedList = new ArrayList<>();
+    List<OptionEntry> OptionsListInAdapter = new ArrayList<>();
 
-    public List<CustomObjectForOneOptionItems> getMohamedList() {
-        return mohamedList;
+    public void setOptionsListInAdapter(List<OptionEntry> optionsListInAdapter) {
+        OptionsListInAdapter = optionsListInAdapter;
     }
 
-    public AdapterForCustomListViews(@NonNull Context context, int resource, @NonNull List<CustomObjectForOneOptionItems> objects) {
-        super(context, 0, objects);
-        mohamedList=objects;
+    public List<OptionEntry> getOptionsListInAdapter() {
+        return OptionsListInAdapter;
+    }
+
+    public AdapterForCustomListViews(@NonNull Context context, int resource) {
+        super(context, 0);
     }
 
     @NonNull
@@ -36,11 +39,12 @@ public class AdapterForCustomListViews extends ArrayAdapter<CustomObjectForOneOp
             listItemView = LayoutInflater.from(getContext()).inflate(
                     R.layout.one_option_layout, parent, false);
         }
-        CustomObjectForOneOptionItems current = getItem(position);
-        TextView oneOptionId = listItemView.findViewById(R.id.oneOptionId);
-        oneOptionId.setText(String.valueOf(current.getOneOptionId()));
+        //CustomObjectForOneOptionItems current = getItem(position);
+
+        OptionEntry current = OptionsListInAdapter.get(position);
+
         TextView oneOption = listItemView.findViewById(R.id.oneOption);
-        oneOption.setText(current.getOneOption());
+        oneOption.setText(current.getDescription());
         return listItemView;
     }
 }
